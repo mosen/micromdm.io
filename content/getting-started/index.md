@@ -27,12 +27,14 @@ sudo ./micromdm \
     -profile=/path/to/Enroll.mobileconfig \
     -push-cert=path/to/mdm.p12 \
     -push-pass='secret_password' \
+    # pkg-repo is the path to a folder containing application manifests and signed packages
     -pkg-repo=/path/to/pkgrepo \
     -dep-consumer-key "CK_48dd68d198350f512..." \
     -dep-consumer-secret "CS_34c7b2b531a600d..." \
     -dep-access-token "AT_927696831c59ba" \
     -dep-access-secret "AS_c31afd7a09691d8354848"
 ```
+
 
 ## Certificates
 ### Server Certificate
