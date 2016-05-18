@@ -22,7 +22,7 @@ Unlike most commercial MDM products, MicroMDM allows an administrator to choose 
 A workflow allows an administrator to group initial command payloads, a list of configuration profiles and a list of applications together. During DEP enrollment a device will check to see if it has a workflow assigned and execute it.
 
 
-{{< note title="Comming soon" >}}
+{{< note title="Coming soon" >}}
 Workflows are almost finished but there are a few details left to implement.
 {{< /note >}}
 ### Nested workflows 
