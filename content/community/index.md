@@ -27,4 +27,6 @@ This page has links to project, blog posts and other media related to open sourc
 * [DEPy](https://github.com/bruienne/depy) - python SDK for DEP API
 * [apple_dep_client](https://github.com/cellabus/apple_dep_client) - ruby gem for dep
 * [DockServiceManager](https://github.com/ygini/DockServiceManager) - manage the dock content via MDM and dockutil
+* [ProgressScreen](https://github.com/jason-tratta/ProgressScreen) - recreation of IBMs Casper Enrollment screen demoed at JNUC 2015
+
 
