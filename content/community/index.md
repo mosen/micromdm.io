@@ -28,5 +28,5 @@ This page has links to project, blog posts and other media related to open sourc
 * [apple_dep_client](https://github.com/cellabus/apple_dep_client) - ruby gem for dep
 * [DockServiceManager](https://github.com/ygini/DockServiceManager) - manage the dock content via MDM and dockutil
 * [ProgressScreen](https://github.com/jason-tratta/ProgressScreen) - recreation of IBMs Casper Enrollment screen demoed at JNUC 2015
-
+* [mk_pkg_manifest.py](https://gist.github.com/jessepeterson/d9d1f592a8c54395827f73dc60b3a0f3) - Jesse Petterson's python script to create a manifest plist.
 
