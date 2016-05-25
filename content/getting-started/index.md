@@ -37,8 +37,56 @@ sudo ./micromdm \
 
 
 ## Certificates
+Getting all the necessary certificates in place can be confusing; there are several certificate chains which are not related. Let's try to break these requirements down and explain how each certificate is used.
+
 ### Server Certificate
+The MDM server needs to be secured by TLS. If you have a PKI solution in place, you can just create a server certificate and key for the MDM just like you would for securing any other HTTPS server. 
+You can also create a self signed certificate. In the case of using your own CA and self signed cert you will need to add the certificate chain, all the way to the Root CA in a profile to allow the device to trust the server.
+
 ### Push Certificate
+The Push certificate allows the server to send a MDM push notification to a device, which causes the device to query the server for available commands.   
+The Push certificate is created at `https://identity.apple.com/pushcert/` by uploading a CSR signed by an MDM Vendor Certificate. Because we are our own MDM provider, we must be the ones that sign the push certificate with our own vendor certificate.  
+The MDM Vendor Certificate is only available to organizations that have an Enterprise Developer account, which requires a $300/year fee. Even if your organization has an enterprise account, the `MDM CSR` option is not immediately visible. The administrator of the enterprise account must open a support ticket with Apple and request that the `MDM CSR` option is available. Once Apple enable the MDM CSR option, you can upload a CSR for apple to sign it and create a MDM Vendor certificate.
+
+For those who have the MDM CSR option enabled, MicroMDM provides a [`certhelper`](https://github.com/micromdm/tools/tree/master/certhelper) utility to reduce the number of steps needed to create the MDM CSR, sign a push CSR and format a push certificate request.
+```bash
+# creates an MDM CSR and private key for vendor cert
+# upload the created MDM CSR to enterprise portal to get a push certificate
+certhelper vendor -csr -cn=mdm-certtool -password=secret -country=US -email=foo@gmail.com
+
+# create a "provider" or a "customer" CSR. 
+# This CSR will be signed by the vendor cert and submitted to apple to get a push cert
+certhelper provider -csr -cn=mdm-certtool -password=secret -country=US -email=foo@gmail.com
+
+# sign the provider csr with the vendor private key
+# assumes `mdm.cer` is in the folder with all the other files. You can specify each path separately as well.
+certhelper vendor -sign -password=secret
+
+# Now upload the PushCertificateRequest to https://identity.apple.com/pushcert
+```
+
+### Device Authentication
+The third part of certificate management is verifying device identity. The MDM protocol requires client certificates for devices to authenticate to the server.
+One way for a device to have a client certificate is to use SCEP. MicroMDM will support this in the future. 
+
+A second approach is to have the server CA sign a certificate for each device. The certificate can be embedded in the enrollment profile in a PKCS#12 format and passed on to the device. At the momment, we must do this manually.
+```bash
+# create a private key for the device
+openssl genrsa 2048 > identity.key
+
+# create a CSR using the private key
+openssl req -new -key identity.key -out identity.csr
+
+# use the server CA to sign the CSR
+openssl x509 -req -days 365 -in identity.csr -CA cacert.crt -CAkey cakey.key -CAcreateserial -out identity.crt
+
+# export the certificate as PKCS#12 using a passphrase.
+openssl pkcs12 -export -out identity.p12 -inkey identity.key -in identity.crt -certfile cacert.crt
+```
+
+The identity.p12 file and passphrase can be added in the enrollment profile of the device.  
+The next release of MicroMDM will add an enrollment endpoint which will automate the creation of the enrollment profile and certificate.
+
 
 ## Enrollment Profile
 
