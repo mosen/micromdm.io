@@ -9,7 +9,7 @@ Unlike most commercial MDM products, MicroMDM allows an administrator to choose 
 
 ## Features
 * Support for `InstallApplication` and `InstallProfile` commands
-* DEP Enrollment
+* DEP and non-DEP Enrollment
 * [Workflows](workflows/)
 * [RESTful API](management-api/) and SDK
 * single binary - can be deployed on linux, osx

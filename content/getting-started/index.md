@@ -10,7 +10,7 @@ title: Getting Started
 * [Redis](http://redis.io/) - used to queue MDM commands
 * MDM Push Certificate - see section on certificates
 * SSL Certificate - see section on certificates
-* Enrollment Profile - template provided
+* (Optional) Enrollment Profile - template provided
 * DEP Server token -- optional, required for DEP integration/enrollment
 * server must be accessible on the internet
 
@@ -89,6 +89,12 @@ The next release of MicroMDM will add an enrollment endpoint which will automate
 
 
 ## Enrollment Profile
+
+MicroMDM provides you with an enrollment url `/mdm/enroll` which will generate an enrollment profile.
+This requires you to supply a SCEP server URL, and the URL of your server matching your SSL certificate and port configuration.
+
+You may also provide your own profile made by hand which includes all of the necessary certificate payloads.
+At the moment this is required if using DEP.
 
 ## DEP Token
 

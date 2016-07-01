@@ -56,6 +56,11 @@ canonifyurls = true
 	weight = 30
 
 [[menu.main]]
+    name   = "Configuration Reference"
+    url    = "config-reference/"
+    weight = 40
+
+[[menu.main]]
 	name   = "Community"
 	url    = "community/"
 	weight = 80
