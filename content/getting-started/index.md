@@ -67,26 +67,18 @@ certhelper vendor -sign -password=secret
 
 ### Device Authentication
 The third part of certificate management is verifying device identity. The MDM protocol requires client certificates for devices to authenticate to the server.
-One way for a device to have a client certificate is to use SCEP. MicroMDM will support this in the future. 
+This is usually done by telling the device to use a SCEP service to generate the certificate when it enrolls.
 
-A second approach is to have the server CA sign a certificate for each device. The certificate can be embedded in the enrollment profile in a PKCS#12 format and passed on to the device. At the momment, we must do this manually.
-```bash
-# create a private key for the device
-openssl genrsa 2048 > identity.key
+*NOTE:* You could also create an enrollment profile by hand which includes an identity certificate (but the same identity would
+be shared by every device on the MDM).
 
-# create a CSR using the private key
-openssl req -new -key identity.key -out identity.csr
+There are two flags to control the SCEP enrollment process: `--scep-url` and `--scep-challenge`.
+If you are running the [`micromdm/scep`](https://github.com/micromdm/scep) server with the default port (8080) and a 
+challenge of `sekret`, then you would add these flags:
 
-# use the server CA to sign the CSR
-openssl x509 -req -days 365 -in identity.csr -CA cacert.crt -CAkey cakey.key -CAcreateserial -out identity.crt
-
-# export the certificate as PKCS#12 using a passphrase.
-openssl pkcs12 -export -out identity.p12 -inkey identity.key -in identity.crt -certfile cacert.crt
-```
-
-The identity.p12 file and passphrase can be added in the enrollment profile of the device.  
-The next release of MicroMDM will add an enrollment endpoint which will automate the creation of the enrollment profile and certificate.
-
+        --scep-url http://scep-server.example:8080/scep
+        --scep-challenge sekret
+        
 
 ## Enrollment Profile
 
