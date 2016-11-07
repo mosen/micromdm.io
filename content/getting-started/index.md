@@ -10,9 +10,9 @@ title: Getting Started
 * [Redis](http://redis.io/) - used to queue MDM commands
 * MDM Push Certificate - see section on certificates
 * SSL Certificate - see section on certificates
-* Enrollment Profile - template provided
+* SCEP Server - [micromdm/scep](https://github.com/micromdm/scep) Recommended
 * DEP Server token -- optional, required for DEP integration/enrollment
-* server must be accessible on the internet
+* server should be accessible on the internet, and **MUST** be allowed access to APNS through the firewall.
 
 ### Configure and Run
 MicroMDM can be configured by providing the necessary flags or setting environment variables.
@@ -42,6 +42,7 @@ Getting all the necessary certificates in place can be confusing; there are seve
 ### Server Certificate
 The MDM server needs to be secured by TLS. If you have a PKI solution in place, you can just create a server certificate and key for the MDM just like you would for securing any other HTTPS server. 
 You can also create a self signed certificate. In the case of using your own CA and self signed cert you will need to add the certificate chain, all the way to the Root CA in a profile to allow the device to trust the server.
+If you provide a local copy of the Root CA with flag `--tls-ca-cert <path>`, it will be included in the enrollment profile, and therefore trusted.
 
 ### Push Certificate
 The Push certificate allows the server to send a MDM push notification to a device, which causes the device to query the server for available commands.   
@@ -69,9 +70,6 @@ certhelper vendor -sign -password=secret
 The third part of certificate management is verifying device identity. The MDM protocol requires client certificates for devices to authenticate to the server.
 This is usually done by telling the device to use a SCEP service to generate the certificate when it enrolls.
 
-*NOTE:* You could also create an enrollment profile by hand which includes an identity certificate (but the same identity would
-be shared by every device on the MDM).
-
 There are two flags to control the SCEP enrollment process: `--scep-url` and `--scep-challenge`.
 If you are running the [`micromdm/scep`](https://github.com/micromdm/scep) server with the default port (8080) and a 
 challenge of `sekret`, then you would add these flags:
@@ -79,8 +77,14 @@ challenge of `sekret`, then you would add these flags:
         --scep-url http://scep-server.example:8080/scep
         --scep-challenge sekret
         
+The enrollment profile will now include a SCEP payload instructing your device(s) to create a certificate during enrollment.
 
-## Enrollment Profile
+## Enrollment
+
+You can enroll a device at any time by visiting the URL `https://<your server>/mdm/enroll`.
+Each time you enroll, a unique Identity certificate is generated in the **System** keychain.
+If you specified paths to your TLS certificate and CA certificate, then those will be trusted as part of the enrollment
+payload.
 
 ## DEP Token
 
